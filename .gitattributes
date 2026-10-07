@@ -1,0 +1,3 @@
+# Preserve upstream patch context and the author's license byte for byte.
+patches/*.patch -whitespace
+licenses/ds3os-MIT.txt -whitespace

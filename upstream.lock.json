@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/TLeonardUK/ds3os.git",
+  "commit": "56406879a31505a71bea8c6290da370067f43659",
+  "license": "MIT",
+  "game_build": "10167187",
+  "game_version": "1.15.2",
+  "patch_sha256": "9b89ee0dd567025cbc49655559a3003f6d1fb3032dc3a6ac8367a272f1589fa6"
+}

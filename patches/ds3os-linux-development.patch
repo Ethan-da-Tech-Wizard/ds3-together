@@ -1,0 +1,805 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f30a08f..94e410e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,7 +13,11 @@ include(common)
+ 
+ project(ds3os C CXX)
+ 
+-add_subdirectory(Source)
++option(WYLD_LOOPBACK_ONLY "Bind the development server to localhost only" OFF)
++if (WYLD_LOOPBACK_ONLY)
++    add_definitions(-DWYLD_LOOPBACK_ONLY)
++endif()
+ 
++add_subdirectory(Source)
+ 
+ 
+diff --git a/Source/Injector/Injector/Injector.h b/Source/Injector/Injector/Injector.h
+index 2f652b6..54543ae 100644
+--- a/Source/Injector/Injector/Injector.h
++++ b/Source/Injector/Injector/Injector.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Platform/Platform.h"
+ #include "Shared/Game/GameType.h"
+ #include "Config/RuntimeConfig.h"
+diff --git a/Source/Server.DarkSouls2/Server/DS2_Game.h b/Source/Server.DarkSouls2/Server/DS2_Game.h
+index 3036e41..aa01c32 100644
+--- a/Source/Server.DarkSouls2/Server/DS2_Game.h
++++ b/Source/Server.DarkSouls2/Server/DS2_Game.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Game.h"
+ 
+ class DS2_Game : public Game
+diff --git a/Source/Server.DarkSouls2/Server/GameService/DS2_PlayerState.h b/Source/Server.DarkSouls2/Server/GameService/DS2_PlayerState.h
+index 226251f..e61ef92 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/DS2_PlayerState.h
++++ b/Source/Server.DarkSouls2/Server/GameService/DS2_PlayerState.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <string>
+ 
+ #include "Protobuf/DS2_Protobufs.h"
+diff --git a/Source/Server.DarkSouls2/Server/GameService/GameManagers/Bloodstain/DS2_BloodstainManager.h b/Source/Server.DarkSouls2/Server/GameService/GameManagers/Bloodstain/DS2_BloodstainManager.h
+index 1aed6d1..0697e80 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/GameManagers/Bloodstain/DS2_BloodstainManager.h
++++ b/Source/Server.DarkSouls2/Server/GameService/GameManagers/Bloodstain/DS2_BloodstainManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Server/GameService/Utils/OnlineAreaPool.h"
+ #include "Server/Database/DatabaseTypes.h"
+diff --git a/Source/Server.DarkSouls2/Server/GameService/GameManagers/Ghosts/DS2_GhostManager.h b/Source/Server.DarkSouls2/Server/GameService/GameManagers/Ghosts/DS2_GhostManager.h
+index ff62df7..35f33cd 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/GameManagers/Ghosts/DS2_GhostManager.h
++++ b/Source/Server.DarkSouls2/Server/GameService/GameManagers/Ghosts/DS2_GhostManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Server/GameService/Utils/OnlineAreaPool.h"
+ #include "Server/Database/DatabaseTypes.h"
+diff --git a/Source/Server.DarkSouls2/Server/GameService/GameManagers/MirrorKnight/DS2_MirrorKnightManager.h b/Source/Server.DarkSouls2/Server/GameService/GameManagers/MirrorKnight/DS2_MirrorKnightManager.h
+index acf8eca..00edae5 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/GameManagers/MirrorKnight/DS2_MirrorKnightManager.h
++++ b/Source/Server.DarkSouls2/Server/GameService/GameManagers/MirrorKnight/DS2_MirrorKnightManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Server/GameService/Utils/OnlineAreaPool.h"
+ #include "Server/Database/DatabaseTypes.h"
+diff --git a/Source/Server.DarkSouls2/Server/GameService/GameManagers/QuickMatch/DS2_QuickMatchManager.h b/Source/Server.DarkSouls2/Server/GameService/GameManagers/QuickMatch/DS2_QuickMatchManager.h
+index 4b8bd35..b358d6c 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/GameManagers/QuickMatch/DS2_QuickMatchManager.h
++++ b/Source/Server.DarkSouls2/Server/GameService/GameManagers/QuickMatch/DS2_QuickMatchManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Protobuf/DS2_Protobufs.h"
+ #include "Server/GameService/Utils/DS2_GameIds.h"
+diff --git a/Source/Server.DarkSouls2/Server/GameService/GameManagers/Signs/DS2_SignManager.h b/Source/Server.DarkSouls2/Server/GameService/GameManagers/Signs/DS2_SignManager.h
+index 785eb1e..00133df 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/GameManagers/Signs/DS2_SignManager.h
++++ b/Source/Server.DarkSouls2/Server/GameService/GameManagers/Signs/DS2_SignManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Server/GameService/Utils/OnlineAreaPool.h"
+ #include "Server/Database/DatabaseTypes.h"
+diff --git a/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_CellAndAreaId.h b/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_CellAndAreaId.h
+index b72a5e1..a1464c9 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_CellAndAreaId.h
++++ b/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_CellAndAreaId.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/Utils/DS2_GameIds.h"
+ 
+ struct DS2_CellAndAreaId
+diff --git a/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_NRSSRSanitizer.h b/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_NRSSRSanitizer.h
+index cfa1a4a..fa58807 100644
+--- a/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_NRSSRSanitizer.h
++++ b/Source/Server.DarkSouls2/Server/GameService/Utils/DS2_NRSSRSanitizer.h
+@@ -22,6 +22,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <inttypes.h>
+ 
+ #ifdef _WIN32
+diff --git a/Source/Server.DarkSouls3/Server/DS3_Game.h b/Source/Server.DarkSouls3/Server/DS3_Game.h
+index 6e4d5e6..b300c6b 100644
+--- a/Source/Server.DarkSouls3/Server/DS3_Game.h
++++ b/Source/Server.DarkSouls3/Server/DS3_Game.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Game.h"
+ 
+ class DS3_Game : public Game
+diff --git a/Source/Server.DarkSouls3/Server/GameService/DS3_PlayerState.h b/Source/Server.DarkSouls3/Server/GameService/DS3_PlayerState.h
+index 9118500..3de703e 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/DS3_PlayerState.h
++++ b/Source/Server.DarkSouls3/Server/GameService/DS3_PlayerState.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <string>
+ 
+ #include "Protobuf/DS3_Protobufs.h"
+diff --git a/Source/Server.DarkSouls3/Server/GameService/GameManagers/Bloodstain/DS3_BloodstainManager.h b/Source/Server.DarkSouls3/Server/GameService/GameManagers/Bloodstain/DS3_BloodstainManager.h
+index f08e094..f3352a8 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/GameManagers/Bloodstain/DS3_BloodstainManager.h
++++ b/Source/Server.DarkSouls3/Server/GameService/GameManagers/Bloodstain/DS3_BloodstainManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Server/GameService/Utils/OnlineAreaPool.h"
+ #include "Server/Database/DatabaseTypes.h"
+diff --git a/Source/Server.DarkSouls3/Server/GameService/GameManagers/Ghosts/DS3_GhostManager.h b/Source/Server.DarkSouls3/Server/GameService/GameManagers/Ghosts/DS3_GhostManager.h
+index b372e6d..128d750 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/GameManagers/Ghosts/DS3_GhostManager.h
++++ b/Source/Server.DarkSouls3/Server/GameService/GameManagers/Ghosts/DS3_GhostManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Server/GameService/Utils/OnlineAreaPool.h"
+ #include "Server/Database/DatabaseTypes.h"
+diff --git a/Source/Server.DarkSouls3/Server/GameService/GameManagers/QuickMatch/DS3_QuickMatchManager.h b/Source/Server.DarkSouls3/Server/GameService/GameManagers/QuickMatch/DS3_QuickMatchManager.h
+index 2af2eac..fc0a3e2 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/GameManagers/QuickMatch/DS3_QuickMatchManager.h
++++ b/Source/Server.DarkSouls3/Server/GameService/GameManagers/QuickMatch/DS3_QuickMatchManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Protobuf/DS3_Protobufs.h"
+ #include "Server/GameService/Utils/DS3_GameIds.h"
+diff --git a/Source/Server.DarkSouls3/Server/GameService/GameManagers/Signs/DS3_SignManager.h b/Source/Server.DarkSouls3/Server/GameService/GameManagers/Signs/DS3_SignManager.h
+index 956090d..8f5feaa 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/GameManagers/Signs/DS3_SignManager.h
++++ b/Source/Server.DarkSouls3/Server/GameService/GameManagers/Signs/DS3_SignManager.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/GameManager.h"
+ #include "Server/GameService/Utils/OnlineAreaPool.h"
+ #include "Server/Database/DatabaseTypes.h"
+diff --git a/Source/Server.DarkSouls3/Server/GameService/Utils/DS3_NRSSRSanitizer.h b/Source/Server.DarkSouls3/Server/GameService/Utils/DS3_NRSSRSanitizer.h
+index 9b511c6..9d3a613 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/Utils/DS3_NRSSRSanitizer.h
++++ b/Source/Server.DarkSouls3/Server/GameService/Utils/DS3_NRSSRSanitizer.h
+@@ -22,6 +22,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <inttypes.h>
+ 
+ #ifdef _WIN32
+diff --git a/Source/Server.DarkSouls3/Server/GameService/Utils/Data/DS3_BloodMessageData.h b/Source/Server.DarkSouls3/Server/GameService/Utils/Data/DS3_BloodMessageData.h
+index 1349889..73f3ddc 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/Utils/Data/DS3_BloodMessageData.h
++++ b/Source/Server.DarkSouls3/Server/GameService/Utils/Data/DS3_BloodMessageData.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <vector>
+ #include "Server/GameService/Utils/DS3_GameIds.h"
+ 
+diff --git a/Source/Server.DarkSouls3/Server/GameService/Utils/Data/PropertyList.h b/Source/Server.DarkSouls3/Server/GameService/Utils/Data/PropertyList.h
+index 8de29c0..d2e9824 100644
+--- a/Source/Server.DarkSouls3/Server/GameService/Utils/Data/PropertyList.h
++++ b/Source/Server.DarkSouls3/Server/GameService/Utils/Data/PropertyList.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <vector>
+ #include <stdexcept>
+ 
+diff --git a/Source/Server/Client/Client.h b/Source/Server/Client/Client.h
+index d711729..bf59d05 100644
+--- a/Source/Server/Client/Client.h
++++ b/Source/Server/Client/Client.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Database/ServerDatabase.h"
+ 
+ #include "Shared/Platform/Platform.h"
+diff --git a/Source/Server/Server/AuthService/AuthClient.h b/Source/Server/Server/AuthService/AuthClient.h
+index 81dc42c..d4bb841 100644
+--- a/Source/Server/Server/AuthService/AuthClient.h
++++ b/Source/Server/Server/AuthService/AuthClient.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <memory>
+ #include <string>
+ #include <vector>
+diff --git a/Source/Server/Server/Database/DatabaseTypes.h b/Source/Server/Server/Database/DatabaseTypes.h
+index 114245b..4f89a75 100644
+--- a/Source/Server/Server/Database/DatabaseTypes.h
++++ b/Source/Server/Server/Database/DatabaseTypes.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <Protobuf/SharedProtobufs.h>
+ 
+ #include <unordered_set>
+diff --git a/Source/Server/Server/Database/ServerDatabase.h b/Source/Server/Server/Database/ServerDatabase.h
+index 3f7e54d..b419e44 100644
+--- a/Source/Server/Server/Database/ServerDatabase.h
++++ b/Source/Server/Server/Database/ServerDatabase.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <filesystem>
+ #include <functional>
+ #include <variant>
+diff --git a/Source/Server/Server/Game.h b/Source/Server/Server/Game.h
+index 8ded31e..ab48876 100644
+--- a/Source/Server/Server/Game.h
++++ b/Source/Server/Server/Game.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Streams/Frpg2ReliableUdpMessage.h"
+ #include "Server/Streams/Frpg2ReliableUdpMessageStream.h"
+ #include "Server/GameService/GameService.h"
+diff --git a/Source/Server/Server/GameService/GameClient.h b/Source/Server/Server/GameService/GameClient.h
+index 95a8f77..96a3f81 100644
+--- a/Source/Server/Server/GameService/GameClient.h
++++ b/Source/Server/Server/GameService/GameClient.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/GameService/PlayerState.h"
+ 
+ #include <memory>
+diff --git a/Source/Server/Server/GameService/GameService.h b/Source/Server/Server/GameService/GameService.h
+index 2274922..aa1e0a9 100644
+--- a/Source/Server/Server/GameService/GameService.h
++++ b/Source/Server/Server/GameService/GameService.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Service.h"
+ 
+ #include <memory>
+diff --git a/Source/Server/Server/GameService/PlayerState.h b/Source/Server/Server/GameService/PlayerState.h
+index 5c12638..04d00e3 100644
+--- a/Source/Server/Server/GameService/PlayerState.h
++++ b/Source/Server/Server/GameService/PlayerState.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <string>
+ #include <vector>
+ #include <unordered_map>
+diff --git a/Source/Server/Server/GameService/Utils/OnlineAreaPool.h b/Source/Server/Server/GameService/Utils/OnlineAreaPool.h
+index d7e6b04..27b8e84 100644
+--- a/Source/Server/Server/GameService/Utils/OnlineAreaPool.h
++++ b/Source/Server/Server/GameService/Utils/OnlineAreaPool.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <unordered_map>
+ #include <deque>
+ #include <numeric>
+diff --git a/Source/Server/Server/Server.h b/Source/Server/Server/Server.h
+index b29b032..a942d31 100644
+--- a/Source/Server/Server/Server.h
++++ b/Source/Server/Server/Server.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Database/ServerDatabase.h"
+ 
+ #include "Shared/Platform/Platform.h"
+diff --git a/Source/Server/Server/Streams/Frpg2Message.h b/Source/Server/Server/Streams/Frpg2Message.h
+index ec1ab59..2d0fdbc 100644
+--- a/Source/Server/Server/Streams/Frpg2Message.h
++++ b/Source/Server/Server/Streams/Frpg2Message.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Utils/Endian.h"
+ 
+ #include <vector>
+diff --git a/Source/Server/Server/Streams/Frpg2MessageStream.h b/Source/Server/Server/Streams/Frpg2MessageStream.h
+index 8ed6c77..139d8eb 100644
+--- a/Source/Server/Server/Streams/Frpg2MessageStream.h
++++ b/Source/Server/Server/Streams/Frpg2MessageStream.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Streams/Frpg2PacketStream.h"
+ #include "Server/Streams/Frpg2Message.h"
+ 
+diff --git a/Source/Server/Server/Streams/Frpg2PacketStream.h b/Source/Server/Server/Streams/Frpg2PacketStream.h
+index 9d46e04..888e045 100644
+--- a/Source/Server/Server/Streams/Frpg2PacketStream.h
++++ b/Source/Server/Server/Streams/Frpg2PacketStream.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Streams/Frpg2Packet.h"
+ 
+ #include <string>
+diff --git a/Source/Server/Server/Streams/Frpg2ReliableUdpFragment.h b/Source/Server/Server/Streams/Frpg2ReliableUdpFragment.h
+index d299221..1db3111 100644
+--- a/Source/Server/Server/Streams/Frpg2ReliableUdpFragment.h
++++ b/Source/Server/Server/Streams/Frpg2ReliableUdpFragment.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Utils/Endian.h"
+ 
+ #include <vector>
+diff --git a/Source/Server/Server/Streams/Frpg2ReliableUdpFragmentStream.h b/Source/Server/Server/Streams/Frpg2ReliableUdpFragmentStream.h
+index dc87e56..8d2dab2 100644
+--- a/Source/Server/Server/Streams/Frpg2ReliableUdpFragmentStream.h
++++ b/Source/Server/Server/Streams/Frpg2ReliableUdpFragmentStream.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Streams/Frpg2ReliableUdpPacketStream.h"
+ #include "Server/Streams/Frpg2ReliableUdpFragment.h"
+ 
+diff --git a/Source/Server/Server/Streams/Frpg2ReliableUdpMessage.h b/Source/Server/Server/Streams/Frpg2ReliableUdpMessage.h
+index bb8da18..1e7e851 100644
+--- a/Source/Server/Server/Streams/Frpg2ReliableUdpMessage.h
++++ b/Source/Server/Server/Streams/Frpg2ReliableUdpMessage.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Utils/Endian.h"
+ #include "Shared/Game/GameType.h"
+ 
+diff --git a/Source/Server/Server/Streams/Frpg2ReliableUdpMessageStream.h b/Source/Server/Server/Streams/Frpg2ReliableUdpMessageStream.h
+index 9c7b44e..6eef802 100644
+--- a/Source/Server/Server/Streams/Frpg2ReliableUdpMessageStream.h
++++ b/Source/Server/Server/Streams/Frpg2ReliableUdpMessageStream.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Streams/Frpg2ReliableUdpFragmentStream.h"
+ #include "Server/Streams/Frpg2ReliableUdpMessage.h"
+ 
+diff --git a/Source/Server/Server/Streams/Frpg2ReliableUdpPacketStream.h b/Source/Server/Server/Streams/Frpg2ReliableUdpPacketStream.h
+index 2013acd..a339e39 100644
+--- a/Source/Server/Server/Streams/Frpg2ReliableUdpPacketStream.h
++++ b/Source/Server/Server/Streams/Frpg2ReliableUdpPacketStream.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/Streams/Frpg2UdpPacketStream.h"
+ #include "Server/Streams/Frpg2ReliableUdpPacket.h"
+ 
+diff --git a/Source/Server/Server/Streams/Frpg2UdpPacket.h b/Source/Server/Server/Streams/Frpg2UdpPacket.h
+index 6ea5a3f..fb94d33 100644
+--- a/Source/Server/Server/Streams/Frpg2UdpPacket.h
++++ b/Source/Server/Server/Streams/Frpg2UdpPacket.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Utils/Endian.h"
+ 
+ #include <vector>
+diff --git a/Source/Server/Server/Streams/Frpg2UdpPacketStream.h b/Source/Server/Server/Streams/Frpg2UdpPacketStream.h
+index 3060060..9cc3ba3 100644
+--- a/Source/Server/Server/Streams/Frpg2UdpPacketStream.h
++++ b/Source/Server/Server/Streams/Frpg2UdpPacketStream.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <vector>
+ #include <memory>
+ 
+diff --git a/Source/Server/Server/WebUIService/Handlers/PlayersHandler.h b/Source/Server/Server/WebUIService/Handlers/PlayersHandler.h
+index 0edfe00..d0acc95 100644
+--- a/Source/Server/Server/WebUIService/Handlers/PlayersHandler.h
++++ b/Source/Server/Server/WebUIService/Handlers/PlayersHandler.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/WebUIService/Handlers/WebUIHandler.h"
+ #include "Server/GameService/PlayerState.h"
+ 
+diff --git a/Source/Server/Server/WebUIService/Handlers/StatisticsHandler.h b/Source/Server/Server/WebUIService/Handlers/StatisticsHandler.h
+index ca2c23d..a4afd5f 100644
+--- a/Source/Server/Server/WebUIService/Handlers/StatisticsHandler.h
++++ b/Source/Server/Server/WebUIService/Handlers/StatisticsHandler.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Server/WebUIService/Handlers/WebUIHandler.h"
+ #include "Server/GameService/PlayerState.h"
+ 
+diff --git a/Source/Server/Server/WebUIService/WebUIService.cpp b/Source/Server/Server/WebUIService/WebUIService.cpp
+index 7d0175b..9bb81c6 100644
+--- a/Source/Server/Server/WebUIService/WebUIService.cpp
++++ b/Source/Server/Server/WebUIService/WebUIService.cpp
+@@ -69,7 +69,11 @@ bool WebUIService::Init()
+     Options.push_back("document_root");
+     Options.push_back(StaticPath.string());
+     Options.push_back("listening_ports");
++#ifdef WYLD_LOOPBACK_ONLY
++    Options.push_back(StringFormat("127.0.0.1:%i", Port));
++#else
+     Options.push_back(StringFormat("%i", Port));
++#endif
+     Options.push_back("num_threads");
+     Options.push_back("5");
+ 
+diff --git a/Source/Shared/Core/Crypto/CWCCipher.h b/Source/Shared/Core/Crypto/CWCCipher.h
+index 726560b..b39608e 100644
+--- a/Source/Shared/Core/Crypto/CWCCipher.h
++++ b/Source/Shared/Core/Crypto/CWCCipher.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Crypto/Cipher.h"
+ 
+ #include "cwc.h"
+diff --git a/Source/Shared/Core/Crypto/CWCClientUDPCipher.h b/Source/Shared/Core/Crypto/CWCClientUDPCipher.h
+index cfc7500..543f655 100644
+--- a/Source/Shared/Core/Crypto/CWCClientUDPCipher.h
++++ b/Source/Shared/Core/Crypto/CWCClientUDPCipher.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Crypto/Cipher.h"
+ 
+ #include "cwc.h"
+diff --git a/Source/Shared/Core/Crypto/CWCServerUDPCipher.h b/Source/Shared/Core/Crypto/CWCServerUDPCipher.h
+index c93ffa4..4f6704c 100644
+--- a/Source/Shared/Core/Crypto/CWCServerUDPCipher.h
++++ b/Source/Shared/Core/Crypto/CWCServerUDPCipher.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Crypto/Cipher.h"
+ 
+ #include "cwc.h"
+diff --git a/Source/Shared/Core/Crypto/RSACipher.h b/Source/Shared/Core/Crypto/RSACipher.h
+index a764eab..0f0dcc7 100644
+--- a/Source/Shared/Core/Crypto/RSACipher.h
++++ b/Source/Shared/Core/Crypto/RSACipher.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Crypto/Cipher.h"
+ #include "Shared/Core/Crypto/RSAKeyPair.h"
+ 
+diff --git a/Source/Shared/Core/Crypto/RSAKeyPair.h b/Source/Shared/Core/Crypto/RSAKeyPair.h
+index 452588d..a66acb6 100644
+--- a/Source/Shared/Core/Crypto/RSAKeyPair.h
++++ b/Source/Shared/Core/Crypto/RSAKeyPair.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Utils/Endian.h"
+ 
+ #include <filesystem>
+diff --git a/Source/Shared/Core/Network/NetConnection.h b/Source/Shared/Core/Network/NetConnection.h
+index da0c70e..857d5eb 100644
+--- a/Source/Shared/Core/Network/NetConnection.h
++++ b/Source/Shared/Core/Network/NetConnection.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <string>
+ #include <memory>
+ #include <vector>
+diff --git a/Source/Shared/Core/Network/NetConnectionTCP.cpp b/Source/Shared/Core/Network/NetConnectionTCP.cpp
+index ae380fe..b11b5b7 100644
+--- a/Source/Shared/Core/Network/NetConnectionTCP.cpp
++++ b/Source/Shared/Core/Network/NetConnectionTCP.cpp
+@@ -102,7 +102,11 @@ bool NetConnectionTCP::Listen(int Port)
+ 
+     struct sockaddr_in ListenAddress;
+     ListenAddress.sin_family = AF_INET;
++#ifdef WYLD_LOOPBACK_ONLY
++    ListenAddress.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++#else
+     ListenAddress.sin_addr.s_addr = INADDR_ANY;
++#endif
+     ListenAddress.sin_port = htons(Port);
+ 
+     if (bind(Socket, (struct sockaddr*)&ListenAddress, sizeof(ListenAddress)) < 0)
+@@ -460,4 +464,4 @@ bool NetConnectionTCP::Pump()
+     }
+ 
+     return false;
+-}
+\ No newline at end of file
++}
+diff --git a/Source/Shared/Core/Network/NetConnectionTCP.h b/Source/Shared/Core/Network/NetConnectionTCP.h
+index 856148c..0ec8c05 100644
+--- a/Source/Shared/Core/Network/NetConnectionTCP.h
++++ b/Source/Shared/Core/Network/NetConnectionTCP.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Network/NetConnection.h"
+ 
+ #if defined(_WIN32)
+diff --git a/Source/Shared/Core/Network/NetConnectionUDP.cpp b/Source/Shared/Core/Network/NetConnectionUDP.cpp
+index e5c8998..a155b34 100644
+--- a/Source/Shared/Core/Network/NetConnectionUDP.cpp
++++ b/Source/Shared/Core/Network/NetConnectionUDP.cpp
+@@ -91,7 +91,11 @@ bool NetConnectionUDP::Listen(int Port)
+ 
+     struct sockaddr_in ListenAddress;
+     ListenAddress.sin_family = AF_INET;
++#ifdef WYLD_LOOPBACK_ONLY
++    ListenAddress.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++#else
+     ListenAddress.sin_addr.s_addr = INADDR_ANY;
++#endif
+     ListenAddress.sin_port = htons(Port);
+ 
+     if (bind(Socket, (struct sockaddr*)&ListenAddress, sizeof(ListenAddress)) < 0)
+diff --git a/Source/Shared/Core/Network/NetConnectionUDP.h b/Source/Shared/Core/Network/NetConnectionUDP.h
+index fc60d5c..beab9bc 100644
+--- a/Source/Shared/Core/Network/NetConnectionUDP.h
++++ b/Source/Shared/Core/Network/NetConnectionUDP.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include "Shared/Core/Network/NetConnection.h"
+ 
+ #if defined(_WIN32)
+diff --git a/Source/Shared/Core/Network/NetHttpRequest.h b/Source/Shared/Core/Network/NetHttpRequest.h
+index ac79666..631f1c2 100644
+--- a/Source/Shared/Core/Network/NetHttpRequest.h
++++ b/Source/Shared/Core/Network/NetHttpRequest.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <string>
+ #include <memory>
+ #include <vector>
+@@ -75,4 +77,4 @@ private:
+     CURL* Handle = nullptr;
+     CURLM* HandleMulti = nullptr;
+ 
+-};
+\ No newline at end of file
++};
+diff --git a/Source/Shared/Core/Utils/Protobuf.h b/Source/Shared/Core/Utils/Protobuf.h
+index 97cc923..3dbf6bc 100644
+--- a/Source/Shared/Core/Utils/Protobuf.h
++++ b/Source/Shared/Core/Utils/Protobuf.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <string>
+ #include <vector>
+ #include <memory>
+diff --git a/Source/Shared/Core/Utils/Random.h b/Source/Shared/Core/Utils/Random.h
+index ebd45d3..104304e 100644
+--- a/Source/Shared/Core/Utils/Random.h
++++ b/Source/Shared/Core/Utils/Random.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <filesystem>
+ #include <string>
+ #include <vector>
+diff --git a/Source/Shared/Core/Utils/Strings.h b/Source/Shared/Core/Utils/Strings.h
+index e172bee..5edccee 100644
+--- a/Source/Shared/Core/Utils/Strings.h
++++ b/Source/Shared/Core/Utils/Strings.h
+@@ -9,6 +9,8 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
++
+ #include <string>
+ #include <vector>
+ #include <memory>
+@@ -49,4 +51,4 @@ bool StringEndsWith(const std::string& subject, const std::string& needle);
+ bool StringStartsWith(const std::string& subject, const std::string& needle);
+ 
+ // Returns true if all the characters in a string are human readable.
+-bool StringIsHumanReadable(const std::string& subject);
+\ No newline at end of file
++bool StringIsHumanReadable(const std::string& subject);
+diff --git a/Source/ThirdParty/curl/CMakeLists.txt b/Source/ThirdParty/curl/CMakeLists.txt
+index 126c107..ac96105 100644
+--- a/Source/ThirdParty/curl/CMakeLists.txt
++++ b/Source/ThirdParty/curl/CMakeLists.txt
+@@ -303,6 +303,10 @@ SET(SOURCES
+ 
+ add_library(${PROJECT_NAME} STATIC ${SOURCES})
+ 
++if (UNIX)
++    target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_ARPA_INET_H=1)
++endif()
++
+ target_compile_definitions(${PROJECT_NAME} PUBLIC -DBUILDING_LIBCURL -DCURL_HIDDEN_SYMBOLS -D_USRDLL -DHAVE_CONFIG_H -Dlibcurl_EXPORTS -DCURL_STATICLIB)
+ 
+ target_include_directories(${PROJECT_NAME} PUBLIC
+diff --git a/Source/ThirdParty/zlib/CMakeLists.txt b/Source/ThirdParty/zlib/CMakeLists.txt
+index 78a90f5..3a922ef 100644
+--- a/Source/ThirdParty/zlib/CMakeLists.txt
++++ b/Source/ThirdParty/zlib/CMakeLists.txt
+@@ -36,6 +36,10 @@ SET(SOURCES
+ 
+ add_library(${PROJECT_NAME} STATIC ${SOURCES})
+ 
++if (UNIX)
++    target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_UNISTD_H=1)
++endif()
++
+ if (MSVC)
+     target_compile_options(${PROJECT_NAME} PRIVATE /wd4267)
+ endif()
