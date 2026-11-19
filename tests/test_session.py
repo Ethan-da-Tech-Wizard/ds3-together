@@ -18,6 +18,8 @@ from wyld_together.session import GAME_BUILD, MAX_PLAYERS, PROTOCOL, Rejected, S
 class SessionTests(unittest.TestCase):
     """Integration test suite for SessionStore durability and state machine transitions."""
 
+    # Tests use a file-backed database (not :memory:) so the restart and
+    # multi-connection tests can reopen the same store.
     def setUp(self):
         # Step 1: Create isolated temporary SQLite test database
         self.directory = tempfile.TemporaryDirectory()
@@ -140,6 +142,7 @@ class SessionTests(unittest.TestCase):
         with self.assertRaises(Rejected):
             self.store.apply(self.party, "host", "back", self.connection("reconnect"))
 
+    # Close and reopen the store to simulate a coordinator crash/restart.
     def test_restart_preserves_progress_and_requires_reconnect(self):
         """Verify server recovery after process restart preserves world state but requires reconnection."""
         self.event("host", "boss", "boss_defeated", boss="boss-1")
@@ -167,6 +170,8 @@ class SessionTests(unittest.TestCase):
             self.event("host", "bad", "death", unexpected=True)
         self.assertEqual(self.store.snapshot(self.party), before)
 
+    # Eight writers on four threads, each with its own connection, must produce 8
+    # bosses and revision 9 (1 join + 8 events): no lost updates.
     def test_concurrent_connections_do_not_lose_updates(self):
         """Ensure thread-pool concurrent executions maintain sequential consistency and revisions."""
         def defeat(number):

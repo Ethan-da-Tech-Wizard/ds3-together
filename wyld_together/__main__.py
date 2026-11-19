@@ -21,6 +21,7 @@ def main():
     args = parser.parse_args()
 
     # Step 2: Initialize SQLite session storage backend (WAL mode, ACID guarantees)
+    # ":memory:" keeps the simulation ephemeral; a path persists it for inspection.
     store = SessionStore(args.database)
     try:
         # Step 3: Instantiate a fresh multiplayer party hosted at the starting checkpoint
@@ -30,6 +31,8 @@ def main():
         # Step 4: Define an ordered progression of simulated network & gameplay events
         # Demonstrates join authorization, player mortality, boss defeat sync,
         # bonfire checkpoint epoch reset, and network disconnect/reconnect recovery
+        # Each tuple is (actor, request_id, command). Request ids are unique per actor
+        # so none is treated as a retry.
         events = [
             ("guest", "join", {"type": "join", "build": GAME_BUILD, "protocol": PROTOCOL}),
             ("guest", "death", {"type": "death"}),

@@ -17,6 +17,7 @@ import shutil
 import subprocess
 
 # Determine top-level project root directory
+# Repository root; holds upstream.lock.json and patches/.
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -47,27 +48,36 @@ def main():
     source, build = args.source.resolve(), args.build.resolve()
 
     # Step 3: Verify cryptographic checksum of Linux development patch against lockfile
+    # upstream.lock.json pins the upstream repo URL, commit and the patch hash.
     lock = json.loads((ROOT / "upstream.lock.json").read_text())
     patch = ROOT / "patches/ds3os-linux-development.patch"
+    # Refuse to apply a patch that differs from the one recorded in the lock.
     if hashlib.sha256(patch.read_bytes()).hexdigest() != lock["patch_sha256"]:
         parser.error("Patch differs from upstream.lock.json; review the change first")
 
     # Step 4: Clone or verify pinned commit of the upstream repository
+    # Shallow-fetch exactly the pinned commit rather than a branch, so the build is
+    # reproducible and uses no unpinned code.
     if not source.exists():
         source.parent.mkdir(parents=True, exist_ok=True)
         run("git", "init", source)
         run("git", "remote", "add", "origin", lock["repository"], cwd=source)
         run("git", "fetch", "--depth", "1", "origin", lock["commit"], cwd=source)
         run("git", "checkout", "--detach", "FETCH_HEAD", cwd=source)
+    # Never overwrite a directory the user already has; stop instead.
     if not (source / ".git").exists():
         parser.error("Source directory exists but is not a Git checkout; preserved")
     head = run("git", "rev-parse", "HEAD", cwd=source, capture=True).decode().strip()
+    # Checkout must be exactly the pinned commit.
     if head != lock["commit"]:
         parser.error("Source HEAD differs from the pinned commit; checkout preserved")
     if run("git", "diff", "--cached", "--binary", cwd=source, capture=True):
         parser.error("Source contains staged changes; preserved")
 
     # Step 5: Apply Linux/Proton compatibility patch modifying network listeners
+    # No working-tree diff means the patch is not applied yet: check, then apply.
+    # A non-empty diff must equal the patch byte-for-byte, otherwise there are
+    # local edits we must not build on top of.
     diff = run("git", "diff", "--binary", "--no-ext-diff", cwd=source, capture=True)
     if not diff:
         run("git", "apply", "--check", patch, cwd=source)
@@ -76,6 +86,8 @@ def main():
         parser.error("Source contains changes beyond the supplied patch; preserved")
 
     # Step 6: Configure CMake with loopback security isolation (-DWYLD_LOOPBACK_ONLY=ON)
+    # WYLD_LOOPBACK_ONLY=ON is an option added by our patch that binds every
+    # listener to 127.0.0.1.
     run("cmake", "-S", source, "-B", build, "-DCMAKE_BUILD_TYPE=Release",
         "-DWYLD_LOOPBACK_ONLY=ON")
 
