@@ -29,6 +29,8 @@ class SessionTests(unittest.TestCase):
         self.party = self.store.create("host", "start")["id"]
         self.store.apply(self.party, "guest", "join", self.connection("join"))
 
+    # Close the SQLite connection BEFORE removing its directory; deleting an open
+    # database file fails on some platforms.
     def tearDown(self):
         # Step 3: Teardown database connections and clean temporary directory
         self.store.close()
@@ -174,6 +176,8 @@ class SessionTests(unittest.TestCase):
     # bosses and revision 9 (1 join + 8 events): no lost updates.
     def test_concurrent_connections_do_not_lose_updates(self):
         """Ensure thread-pool concurrent executions maintain sequential consistency and revisions."""
+        # Each call opens its own SessionStore (own connection), as separate server
+        # threads would, and always closes it so threads do not leak connections.
         def defeat(number):
             store = SessionStore(self.path)
             try:
